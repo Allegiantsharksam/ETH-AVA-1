@@ -22,7 +22,7 @@ contract ExampleContract {
         _;
     }
 
-    // Function to set the value with require statement
+    //etting the value with require statement
     function setValue(uint256 _value) public {
         // Require that the value must be positive
         require(_value > 0, "Value must be positive");
@@ -30,26 +30,26 @@ contract ExampleContract {
         emit ValueChanged(_value);
     }
 
-    // Function to check if the sender is the owner with assert statement
+    //Checking if the sender is the owner with assert statement
     function onlyOwnerCanCall() public view returns (bool) {
         // Assert that the sender is the owner
         assert(msg.sender == owner);
         return true;
     }
 
-    // Function to reset the value to zero with revert statement
+    //Reset the value to zero with revert statement
     function resetValue() public onlyOwner {
         value = 0;
         emit ValueReset();
     }
 
-    // Function to demonstrate a condition with both require and revert
+    // Demonstrating a function in a condition with both require and revert
     function safeDivision(uint256 a, uint256 b) public returns (uint256) {
         // Require that the divisor is not zero
         require(b != 0, "Cannot divide by zero");
         uint256 result = a / b;
 
-        // Check result and revert if something went wrong (shouldn't happen in this simple case)
+        // Check result and revert if something went wrong
         if (result * b != a) {
             revert("Division resulted in a remainder");
         }
@@ -65,7 +65,7 @@ contract ExampleContract {
         emit EtherWithdrawn(owner, amount);
     }
 
-    // Function to withdraw all Ether from the contract
+    //Withdrawing all Ether from the contract
     function withdrawAll() public onlyOwner {
         uint256 balance = address(this).balance;
         require(balance > 0, "No Ether to withdraw");
@@ -73,7 +73,7 @@ contract ExampleContract {
         emit EtherWithdrawn(owner, balance);
     }
 
-    // Function to transfer ownership
+    //Transfering ownership
     function transferOwnership(address newOwner) public onlyOwner {
         require(newOwner != address(0), "New owner is the zero address");
         emit OwnershipTransferred(owner, newOwner);
@@ -83,7 +83,7 @@ contract ExampleContract {
     // Fallback function to accept Ether
     receive() external payable {}
 
-    // Function to demonstrate the use of custom errors (introduced in Solidity 0.8.4)
+    //custom errors
     error ValueTooHigh(uint256 provided, uint256 maxAllowed);
 
     function setValueWithCustomError(uint256 _value) public {
