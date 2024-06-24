@@ -5,6 +5,7 @@ contract ExampleContract {
     address public owner;
     uint256 public value;
 
+    // Events for logging
     event ValueChanged(uint256 newValue);
     event ValueReset();
     event DivisionResult(uint256 result);
@@ -15,30 +16,40 @@ contract ExampleContract {
         owner = msg.sender;
     }
 
-    modifier onlyOwner() { //only owner have access
+    // Modifier to restrict functions to only the owner
+    modifier onlyOwner() {
         require(msg.sender == owner, "Caller is not the owner");
         _;
     }
 
+    // Function to set the value with require statement
     function setValue(uint256 _value) public {
+        // Require that the value must be positive
         require(_value > 0, "Value must be positive");
         value = _value;
         emit ValueChanged(_value);
     }
 
+    // Function to check if the sender is the owner with assert statement
     function onlyOwnerCanCall() public view returns (bool) {
+        // Assert that the sender is the owner
         assert(msg.sender == owner);
         return true;
     }
 
+    // Function to reset the value to zero with revert statement
     function resetValue() public onlyOwner {
         value = 0;
         emit ValueReset();
     }
-    function safeDivision(uint256 a, uint256 b) public pure returns (uint256) {
+
+    // Function to demonstrate a condition with both require and revert
+    function safeDivision(uint256 a, uint256 b) public returns (uint256) {
+        // Require that the divisor is not zero
         require(b != 0, "Cannot divide by zero");
         uint256 result = a / b;
 
+        // Check result and revert if something went wrong (shouldn't happen in this simple case)
         if (result * b != a) {
             revert("Division resulted in a remainder");
         }
@@ -47,24 +58,32 @@ contract ExampleContract {
         return result;
     }
 
+    // New function to withdraw Ether (for example purposes)
     function withdraw(uint256 amount) public onlyOwner {
         require(amount <= address(this).balance, "Insufficient balance");
         payable(owner).transfer(amount);
         emit EtherWithdrawn(owner, amount);
     }
 
+    // Function to withdraw all Ether from the contract
+    function withdrawAll() public onlyOwner {
+        uint256 balance = address(this).balance;
+        require(balance > 0, "No Ether to withdraw");
+        payable(owner).transfer(balance);
+        emit EtherWithdrawn(owner, balance);
+    }
+
+    // Function to transfer ownership
     function transferOwnership(address newOwner) public onlyOwner {
         require(newOwner != address(0), "New owner is the zero address");
         emit OwnershipTransferred(owner, newOwner);
         owner = newOwner;
     }
 
+    // Fallback function to accept Ether
     receive() external payable {}
 
-    function destroy() public onlyOwner {
-        selfdestruct(payable(owner));
-    }
-
+    // Function to demonstrate the use of custom errors (introduced in Solidity 0.8.4)
     error ValueTooHigh(uint256 provided, uint256 maxAllowed);
 
     function setValueWithCustomError(uint256 _value) public {
