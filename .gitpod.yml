@@ -1,2 +1,3 @@
 tasks:
-  - init: npm install
+  - name: Dev Server
+    init: npm install -D --yes && brew install solana
