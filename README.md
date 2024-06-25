@@ -61,7 +61,7 @@ Modifier to restrict functions to only the owner
     }
 
 ```
-etting the value with require statement
+Getting the value with require statement
 ```
     function setValue(uint256 _value) public {
 ```
