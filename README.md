@@ -34,51 +34,6 @@ This program runs on EVM along with ".sol" as extension. We can either run it on
 We need a solidity compatible virtual machine in order to run this program.
 Create a new file with ".sol" extension
 
-1. Creating variables
-```
-// public variables here
-    string public tokenName = "Sparsh";
-    string public tokenAbbrv = "SP";
-    uint256 public totalSupply = 0; //Initial token supply
-```
-In it the Token has been created "Sparsh" and it's abreviation has also been created "SP". Intial value has been set to 0.
-2. Mapping variables
-```
-   // mapping variable here
-     mapping(address =>uint256) public balances;
-```
-The "balances" mapping associates each address (key) with a uint256 value (the balance of tokens for that address). This allows 
-the contract to keep track of how many tokens are available on each token address.
-3. minting of tokens
-```
-    // mint function
-    function mint(address _to, uint256 _value) public{ //Private to make sure no one mints it
-       totalSupply += _value;
-       balances[_to] += _value;
-    }
-```
-In it the value of tokenn get's increased;   totalSupply += _value adds the new value to the total supply and balances[_to] += _value 
-deals with increase in balance of the tokens.
-
-4. Burning of tokens
-``` 
-    // burn function
-    function burn(address _from, uint256 _value)public { 
-       require(balances[_from] >= _value, "Balance isn't sufficient");
-       totalSupply -= _value;
-       balances[_from] -= _value;
-    }
-```
-require(balances[_from] >= _value, "Balance isn't sufficient") this code snippet deals with the exception that if the number of tokens to be 
-burned are more than the current value then an exception error is thrown "Balance isn't sufficient". totalSupply -= _value; balances[_from] -= _value;
-These both code snippet deals with the decrease in value of the current "balances" and the update it.
-
-
-
-Once done implementing it you are required to press "Ctrl + S" or Compile the program.
-
-After compiling, it;s time to deploy, deploy the program and look out for the various functions created in order to make the program feasible.
-
 
 
 ## Help
