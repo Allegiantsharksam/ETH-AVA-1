@@ -1,7 +1,6 @@
-# Smart contract for errror handling
+# Smart Contract for Error Handling
 
-Example Smart Contract with Error Handling and Owner Management with the use of require(), assert() and revert() functions. It includes
-functions for setting values, performing safe division, withdrawing funds, transferring ownership, and destroying the contract.
+Example Smart Contract with Error Handling and Owner Management using require(), assert(), and revert() functions. It includes functions for setting values, updating user balances, withdrawing funds, transferring ownership, getting the sum of an array of numbers, concatenating two strings, and checking if a number is prime.
 
 ## Description
 
@@ -17,170 +16,138 @@ This smart contract is designed to illustrate various essential features of Soli
 The contract includes:
 
 1. Functions to set and reset values.
-2. A function to safely divide two numbers.
-3. Owner-restricted functions for withdrawing funds and transferring ownership.
-4. A function to destroy the contract and send remaining funds to the owner.
-5. Custom error handling for setting values with specific constraints.
-
+2. Storing a string.
+3. Updating user balances.
+4. Owner-restricted functions for withdrawing funds and transferring ownership.
+5. A function to get the sum of an array of numbers.
+6. A function to concatenate two strings.
+7. A function to check if a number is prime.
 
 ## Getting Started
 
 ### Installing
 
-This program runs on EVM along with ".sol" as extension. We can either run it on websites like REmix or even on Visual Studios.
+This program runs on EVM along with ".sol" as an extension. You can run it on websites like Remix or even on Visual Studio Code.
 
 ### Executing program
 
-We need a solidity compatible virtual machine in order to run this program.
-Create a new file with ".sol" extension
+You need a Solidity compatible virtual machine to run this program. Create a new file with ".sol" extension and use the following code:
+
 ```
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.8;
 
-contract ExampleContract {
+contract InnovativeContract {
     address public owner;
-    uint256 public value;
-```
-Events for logging
-  ```
+    uint256 public storedValue;
+    string public storedString;
+    mapping(address => uint256) public userBalances;
+
+    // Events for logging
     event ValueChanged(uint256 newValue);
-    event ValueReset();
-    event DivisionResult(uint256 result);
+    event StringStored(string newString);
+    event UserBalanceUpdated(address indexed user, uint256 newBalance);
     event EtherWithdrawn(address indexed owner, uint256 amount);
     event OwnershipTransferred(address indexed previousOwner, address indexed newOwner);
 
     constructor() {
         owner = msg.sender;
     }
-```
-Modifier to restrict functions to only the owner
-```
+
+    // Modifier to restrict functions to only the owner
     modifier onlyOwner() {
         require(msg.sender == owner, "Caller is not the owner");
         _;
     }
 
-```
-Getting the value with require statement
-```
+    // Function to set a new value with custom logic
     function setValue(uint256 _value) public {
-```
-Require that the value must be positive
-```
         require(_value > 0, "Value must be positive");
-        value = _value;
+        storedValue = _value;
         emit ValueChanged(_value);
     }
-```
-Checking if the sender is the owner with assert statement
-```
-    function onlyOwnerCanCall() public view returns (bool) {
-```
-Assert that the sender is the owner
-```
-        assert(msg.sender == owner);
-        return true;
-    }
-```
-Reset the value to zero with revert statement
-   ```
-    function resetValue() public onlyOwner {
-        value = 0;
-        emit ValueReset();
-    }
-```
- Demonstrating a function in a condition with both require and revert
- ```
-    function safeDivision(uint256 a, uint256 b) public returns (uint256) {
-```
- Require that the divisor is not zero
- ```
-       require(b != 0, "Cannot divide by zero");
-        uint256 result = a / b;
 
-```
- Check result and revert if something went wrong
-```
-        if (result * b != a) {
-            revert("Division resulted in a remainder");
-        }
-
-        emit DivisionResult(result);
-        return result;
+    // Function to store a new string
+    function storeString(string calldata _newString) public {
+        storedString = _newString;
+        emit StringStored(_newString);
     }
-```
-New function to withdraw Ether (for example purposes)
-```
+
+    // Function to update the balance of a user
+    function updateUserBalance(address _user, uint256 _amount) public onlyOwner {
+        userBalances[_user] = _amount;
+        emit UserBalanceUpdated(_user, _amount);
+    }
+
+    // Function to withdraw Ether from the contract
     function withdraw(uint256 amount) public onlyOwner {
         require(amount <= address(this).balance, "Insufficient balance");
         payable(owner).transfer(amount);
         emit EtherWithdrawn(owner, amount);
     }
-```
-Withdrawing all Ether from the contract```
-    function withdrawAll() public onlyOwner {
-        uint256 balance = address(this).balance;
-        require(balance > 0, "No Ether to withdraw");
-        payable(owner).transfer(balance);
-        emit EtherWithdrawn(owner, balance);
-    }```
 
-Transfering ownership
-```
-function transferOwnership(address newOwner) public onlyOwner {
+    // Function to transfer ownership
+    function transferOwnership(address newOwner) public onlyOwner {
         require(newOwner != address(0), "New owner is the zero address");
         emit OwnershipTransferred(owner, newOwner);
         owner = newOwner;
     }
-```
 
-Fallback function to accept Ether
+    // Function to get the sum of an array of numbers
+    function getSum(uint256[] memory numbers) public pure returns (uint256 sum) {
+        for (uint256 i = 0; i < numbers.length; i++) {
+            sum += numbers[i];
+        }
+    }
 
-```
+    // Function to concatenate two strings
+    function concatenateStrings(string memory str1, string memory str2) public pure returns (string memory) {
+        return string(abi.encodePacked(str1, str2));
+    }
+
+    // Function to check if a number is prime
+    function isPrime(uint256 number) public pure returns (bool) {
+        if (number <= 1) return false;
+        for (uint256 i = 2; i * i <= number; i++) {
+            if (number % i == 0) return false;
+        }
+        return true;
+    }
+
+    // Fallback function to accept Ether
     receive() external payable {}
 
-```
+    // Custom errors
+    error InvalidValue(uint256 provided, string reason);
 
-custom errors
-
-```
-    error ValueTooHigh(uint256 provided, uint256 maxAllowed);
-
+    // Function with custom error
     function setValueWithCustomError(uint256 _value) public {
-        uint256 maxValue = 1000;
-        if (_value > maxValue) {
-            revert ValueTooHigh(_value, maxValue);
+        if (_value > 1000) {
+            revert InvalidValue(_value, "Value exceeds maximum limit");
         }
-        value = _value;
+        storedValue = _value;
         emit ValueChanged(_value);
     }
 }
 ```
 
-
 ## Help
 
 Common Issues:
- 1. Contract Compilation Errors:
-   A. Ensure your Solidity version is compatible (0.8.8 or later).
-   B. Check for syntax errors or typos in the contract.
+1. **Contract Compilation Errors**:
+   - Ensure your Solidity version is compatible (0.8.8 or later).
+   - Check for syntax errors or typos in the contract.
 
-2. Function Call Errors:
-
-   A. Ensure you are using the correct contract address and ABI.
-   B. Check for access restrictions if encountering permission errors (e.g., only owner functions).
-
+2. **Function Call Errors**:
+   - Ensure you are using the correct contract address and ABI.
+   - Check for access restrictions if encountering permission errors (e.g., only owner functions).
 
 ## Authors
 
-
-Contributors names and contact info
-
-
-ex. Sparsh Shandil 
-ex. [@Allegiantshark](https://linktr.ee/allegiantshark)
-
+Contributors names and contact info:
+- Sparsh Shandil
+- [@Allegiantshark](https://linktr.ee/allegiantshark)
 
 ## License
 
-This project is licensed under the Sparsh Shandil License - see the LICENSE.md file for details
+This project is licensed under the Sparsh Shandil License - see the LICENSE.md file for details.
