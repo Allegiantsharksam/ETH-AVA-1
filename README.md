@@ -1,12 +1,12 @@
 # Smart Contract for Error Handling
 
-Example Smart Contract with Error Handling and Owner Management using require(), assert(), and revert() functions. It includes functions for setting values, updating user balances, withdrawing funds, transferring ownership, getting the sum of an array of numbers, concatenating two strings, and checking if a number is prime.
+Example Smart Contract with Error Handling and Owner Management using `require()`, `assert()`, and `revert()` functions. It includes functions for setting values, updating user balances, withdrawing funds, transferring ownership, getting the sum of an array of numbers, concatenating two strings, checking if a number is prime, and ensuring contract consistency.
 
 ## Description
 
 This smart contract is designed to illustrate various essential features of Solidity, including:
 
-1. Error handling using require(), assert(), and revert().
+1. Error handling using `require()`, `assert()`, and `revert()`.
 2. Managing ownership to restrict certain functions to the contract owner.
 3. Basic financial transactions such as withdrawing Ether and accepting deposits.
 4. Event logging to track significant actions within the contract.
@@ -22,6 +22,7 @@ The contract includes:
 5. A function to get the sum of an array of numbers.
 6. A function to concatenate two strings.
 7. A function to check if a number is prime.
+8. A function to check contract consistency using `assert()`.
 
 ## Getting Started
 
@@ -33,9 +34,10 @@ This program runs on EVM along with ".sol" as an extension. You can run it on we
 
 You need a Solidity compatible virtual machine to run this program. Create a new file with ".sol" extension and use the following code:
 
-```
+```solidity
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.8;
+pragma experimental ABIEncoderV2;
 
 contract InnovativeContract {
     address public owner;
@@ -112,6 +114,12 @@ contract InnovativeContract {
             if (number % i == 0) return false;
         }
         return true;
+    }
+
+    // Function to check contract consistency with assert
+    function checkConsistency() public view {
+        // Assert that the stored value is non-negative
+        assert(storedValue >= 0);
     }
 
     // Fallback function to accept Ether
