@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.8;
+pragma experimental ABIEncoderV2;
 
 contract InnovativeContract {
     address public owner;
@@ -76,6 +77,12 @@ contract InnovativeContract {
             if (number % i == 0) return false;
         }
         return true;
+    }
+
+    // Function to check contract consistency with assert
+    function checkConsistency() public view {
+        // Assert that the stored value is non-negative
+        assert(storedValue >= 0);
     }
 
     // Fallback function to accept Ether
